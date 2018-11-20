@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.river.security</groupId>
+	<artifactId>river-security</artifactId>
+	<version>0.0.1</version>
+	<packaging>pom</packaging>
+<!-- 将版本定义为变量 -->
+<properties><river.security.version>0.0.1</river.security.version></properties>
+	<!-- 依赖管理 -->
+	<!-- 1.springio -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<!-- 替我们管理maven依赖的版本 -->
+			 <groupId>io.spring.platform</groupId>
+            <artifactId>platform-bom</artifactId>
+            <version>Brussels-SR11</version>
+            <type>pom</type>
+            <scope>import</scope>
+			</dependency>
+			<!-- 2.springcloud GA版本(正式发布版本) -->
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>Edgware.SR3</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+<!-- 	<modules> -->
+<!-- 		<module>../river-security-app</module> -->
+<!-- 		<module>../river-security-browser</module> -->
+<!-- 		<module>../river-security-core</module> -->
+<!-- 		<module>../river-security-demo</module> -->
+<!-- 	</modules> -->
+</project>
