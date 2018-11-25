@@ -6,21 +6,16 @@
 	<artifactId>river-security</artifactId>
 	<version>0.0.1</version>
 	<packaging>pom</packaging>
-<!-- 将版本定义为变量 -->
 <properties><river.security.version>0.0.1</river.security.version></properties>
-	<!-- 依赖管理 -->
-	<!-- 1.springio -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<!-- 替我们管理maven依赖的版本 -->
 			 <groupId>io.spring.platform</groupId>
             <artifactId>platform-bom</artifactId>
             <version>Brussels-SR11</version>
             <type>pom</type>
             <scope>import</scope>
 			</dependency>
-			<!-- 2.springcloud GA版本(正式发布版本) -->
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
