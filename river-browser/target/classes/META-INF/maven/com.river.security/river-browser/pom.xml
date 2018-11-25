@@ -7,4 +7,19 @@
   	<version>0.0.1</version>
   	<relativePath>../river-security</relativePath>
   </parent>
+  
+  <dependencies>
+  <dependency>
+  <groupId>com.river.security</groupId>
+  	<artifactId>river-core</artifactId>
+  	<version>${river.security.version}</version>
+  </dependency>
+  
+  <!-- spring session 浏览器依赖-->
+   <dependency>
+  <groupId>org.springframework.session</groupId>
+  	<artifactId>spring-session</artifactId>
+  </dependency>
+  
+  </dependencies>
 </project>

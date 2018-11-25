@@ -7,4 +7,13 @@
   	<version>0.0.1</version>
   	<relativePath>../river-security</relativePath>
   </parent>
+  
+   <dependencies>
+   <!-- 浏览器安全 -->
+  <dependency>
+  <groupId>com.river.security</groupId>
+  	<artifactId>river-browser</artifactId>
+  	<version>${river.security.version}</version>
+  </dependency>
+  </dependencies>
 </project>
