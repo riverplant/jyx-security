@@ -2,6 +2,10 @@ package com.river.web.controller;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,6 +75,53 @@ public class UsetControllerTest {
 		try {
 			mockMvc.perform(MockMvcRequestBuilders.get("/user/a").contentType(MediaType.APPLICATION_JSON_UTF8))
 					.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void whenCreateUserSuccess() {
+		
+		Date date = new Date();
+		String content = "{\"username\":\"tom\",\"password\":\"123456\",\"birthday\":"+date.getTime()+"}";
+		try {
+			String result = mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_UTF8).content(content))
+					.andExpect(MockMvcResultMatchers.status().isOk())
+					.andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+					.andReturn().getResponse().getContentAsString();
+			
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void whenUpdateUserSuccess() {
+		
+		Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		String content = "{\"id\":\"1\",\"username\":\"tom\",\"password\":\"123456\",\"birthday\":"+date.getTime()+"}";
+		try {
+			String result = mockMvc.perform(MockMvcRequestBuilders.put("/user/1").contentType(MediaType.APPLICATION_JSON_UTF8).content(content))
+					.andExpect(MockMvcResultMatchers.status().isOk())
+					.andExpect(MockMvcResultMatchers.jsonPath("$.id").isNotEmpty())
+					.andReturn().getResponse().getContentAsString();
+			
+			System.out.println(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@Test
+	public void whenDeleteUserSuccess() {
+		try {
+			 mockMvc.perform(MockMvcRequestBuilders.delete("/user/1")
+					 .contentType(MediaType.APPLICATION_JSON_UTF8))
+					.andExpect(MockMvcResultMatchers.status().isOk());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
