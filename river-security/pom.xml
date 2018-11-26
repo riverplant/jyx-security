@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.river.security</groupId>
 	<artifactId>river-security</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<packaging>pom</packaging>
 	<properties>
-		<river.security.version>0.0.1</river.security.version>
+		<river.security.version>1.0.0</river.security.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
