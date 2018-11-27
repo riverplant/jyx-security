@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.river.dto.User;
 import com.river.dto.UserQueryCondition;
-import com.river.exception.UserNotExistException;
 import com.river.service.UserService;
 
 /**
@@ -49,9 +48,9 @@ public class UserController {
 	@GetMapping("/{id:\\d+}")
 	@JsonView(User.UserDetailView.class)
 	public User getInfo(@PathVariable String id) {
-
-		throw new UserNotExistException(id);
-		//return userService.getInfo(id);
+        System.out.println("getInfo.......");
+		//throw new UserNotExistException(id);
+		return userService.getInfo(id);
 	}
 
 	@PostMapping
