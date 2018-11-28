@@ -1,19 +1,10 @@
 package com.river.web.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.FilterRegistration;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration.WebMvcAutoConfigurationAdapter;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import com.river.filter.XssFilter;
 import com.river.interceptor.MyInterceptor;
 /**
  * 
@@ -27,6 +18,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(csrfInterceptor);
+	}
+	
+	/**
+	 * for asyn
+	 */
+	@Override
+	public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+//		configurer.setDefaultTimeout(1000);
+//		configurer.registerCallableInterceptors(interceptors)
+//		configurer.registerDeferredResultInterceptors(interceptors)
 	}
 //    @Bean
 //	public FilterRegistrationBean registFilter() {

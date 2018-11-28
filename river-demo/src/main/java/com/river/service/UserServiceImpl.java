@@ -1,5 +1,6 @@
 package com.river.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -42,8 +43,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getInfo(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		User user = new User();
+		user.setId(id);
+		user.setUsername("admin");
+		user.setPassword("admin");
+		user.setEmail("223356565@hotmail.com");
+		user.setBirthday(new Date());
+		return user;
 	}
 
 	@Override

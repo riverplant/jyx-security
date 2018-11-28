@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import com.river.exception.UserNotExistException;
 
-@ControllerAdvice
+@ControllerAdvice//before afterCompletion
 public class ControllerExceptionHandler {
 	
 	@ExceptionHandler(UserNotExistException.class)

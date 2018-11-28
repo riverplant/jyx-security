@@ -24,10 +24,10 @@ public class MyInterceptor implements HandlerInterceptor {
 			if(multipartResolver.isMultipart(request)){ 
 	            String sessionToken = CSRFTokenManager.getTokenForSession(request.getSession());
 				String requestToken = CSRFTokenManager.getTokenFromRequest(request);
-				if (!sessionToken.equals(requestToken)) {
-	                   flag = false;
-					response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bad or missing CSRF value");
-				}        	
+//				if (!sessionToken.equals(requestToken)) {
+//	                   flag = false;
+//					response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bad or missing CSRF value");
+//				}        	
 			}
 			return flag;
 	}

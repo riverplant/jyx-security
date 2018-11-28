@@ -50,6 +50,7 @@ public class UserController {
 	public User getInfo(@PathVariable String id) {
         System.out.println("getInfo.......");
 		//throw new UserNotExistException(id);
+        
 		return userService.getInfo(id);
 	}
 
