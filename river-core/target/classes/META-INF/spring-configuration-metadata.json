@@ -1,0 +1,17 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.river.core.properties.SecurityProperties",
+      "name": "river.security",
+      "type": "com.river.core.properties.SecurityProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.river.core.properties.SecurityProperties",
+      "name": "river.security.browser",
+      "type": "com.river.core.properties.BrowserProperties"
+    }
+  ]
+}
