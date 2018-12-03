@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.river.browser.authentication.MyAhthenticationFaildHandler;
+import com.river.browser.authentication.MyAuthenticationSuccessHandler;
 import com.river.core.properties.SecurityProperties;
 
 /**
@@ -20,6 +22,14 @@ import com.river.core.properties.SecurityProperties;
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	private SecurityProperties securityProperties;
+	
+	@Autowired
+	private MyAuthenticationSuccessHandler riverAuthenticationSuccessHandler;
+	
+	@Autowired
+	private MyAhthenticationFaildHandler riverAhthenticationFaildHandler;
+	
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -31,10 +41,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter{
 		http.formLogin()
 		.loginPage("/authentication/require")
 		.loginProcessingUrl("/authentication/loginForm")
+		.successHandler(riverAuthenticationSuccessHandler)
+		.failureHandler(riverAhthenticationFaildHandler)
 		    .and()
 		    .authorizeRequests()
 		    .antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll()
-		    //.antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll()
 		    .antMatchers("/js/**","/css/**","/images/*","/fonts/**","/**/*.png","/**/*.jpg").permitAll()
 		    .anyRequest()
 		    .authenticated()
