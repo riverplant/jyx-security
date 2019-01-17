@@ -1,0 +1,6 @@
+1.索引:
+->单列索引:create index 索引名 on 表名(列名)
+->复合索引:create index 索引名 on 表名(列名1,列名2)
+
+create table users(name varchar2(30),age number,email varchar2(36));
+create index inx_name on users(name);//在name上建索引

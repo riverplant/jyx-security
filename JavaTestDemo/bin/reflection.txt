@@ -1,0 +1,59 @@
+1.String :不可变字符序列
+    StringBuffer:可变序列
+    StringBuilder:效率更高，线程不安全
+    
+  ctrl+shft+t:寻找源码------------------------------------------
+  
+  String -->StringBuffer : new StringBuffer(String)
+  StringBuffer --> String :  StringBuffer.toString
+  
+  添加: append() 删除: delete():StringBuffer.delete(int startIndex, int endIndex) StringBuffer.replace(int startIndex, int endIndex,String str)
+ 修改指定位置的字符:public void setCharAt(int n, char ch) ;  查询: CharAt(int index)  StringBuffer.insert(int index,String str)  翻转:StringBuffer.reverse(StringBuffer 和 StringBuilder特有)
+ 
+ 2.时间日期:
+ 2.1 System:  long currentTimeMillis(): 从1970.1.1 到当前的毫秒数
+ 2.2 Date: java.util.Date
+   Date d = new Date()//返回当前时间
+   Date d = new Date(long)//返回参数毫秒数对应的日期
+   //getTime():返回当前日期对应的long型值  toString()
+ 2.3 SimpleDateFormat:java.text.SimpleDateFormat 
+   格式化: date --> String  format()
+   解析:   String --> date  Parse()
+   SimpleDateFormat sdf = new  SimpleDateFormat("EEE,d MMM yyyy HH:mm:ss Z");
+  Date d = sdf.format(new Date());
+ 
+ 2.4 Calendar:日历类
+    Calendar c = Calendar.getInstance();
+    
+3. Math
+
+4. BigInteger BigDecimal类  
+******************************************************    
+ 利用反射调用指定的方法
+ 
+ public test(){
+ Class clazz = Class.forName("com.Animal");
+ Object obj = clazz.newInstance();
+ Animal a = (Animal)obj;
+//调用非public方法
+Method m1 =  clazz.getDeclaredMethod("getAge");
+m1.setAccessible(true);
+int age = (integer)m1.invoke(a);
+//调用public方法
+Method m2 =  clazz.getMethod("show",String.class);//传入String类型参数
+m1.invoke(a，"无名");
+//调用static方法
+Method m3 =  clazz.getDeclaredMethod("info");
+m3.setAccessible(true);
+m3.invoke(null);
+ }  
+*************************************************************
+*****************AOP面向切片编程!!!!!*******************************
+
+
+
+
+
+
+
+*****************AOP面向切片编程*******************************

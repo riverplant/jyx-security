@@ -1,0 +1,44 @@
+**********************创建方法*********************************
+Optional<Insurance> insuranceOptional = Optional.<Insurance>empty();
+	 insuranceOptional.get();
+	 
+	 Optional<Insurance> insuranceOptional2 = Optional.of(new Insurance());
+	 insuranceOptional2.get();
+	 /**
+	  * Optional.ofNullable(T value); 当value为null就相当于调用
+	  * Optional<Insurance> insuranceOptional = Optional.<Insurance>empty();
+	  * 当value为new Insurance()就相当于调用Optional.of(new Insurance());
+	  */
+	 Optional<Insurance> insuranceOptional3 = Optional.ofNullable(new Insurance());
+	 //
+	 private static String getInsuranceNameByOptional(Insurance insurance) {
+	return Optional.ofNullable(insurance).map(Insurance::getName).orElse("unkown");	
+}
+
+/**
+ * map中获取的返回值自动被Optional包装,即返回值 -> Optional<返回值>
+   flatMap中返回值保持不变,但必须是Optional类型,即Optional<返回值> -> Optional<返回值>
+ * @param person
+ * @return
+ */
+class FlightTicketInfo {
+    private String orderNumber;
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+}
+public class OptionalTest {
+    public void testMap() {
+        FlightTicketInfo flightTicketInfo = null;
+        //通过map会让返回值再多加一层Optional
+        Optional<Optional<String>> s1 = Optional.ofNullable(flightTicketInfo).map(OptionalTest::getOrderNumber);
+
+        Optional<String> s2 = Optional.ofNullable(flightTicketInfo).map(FlightTicketInfo::getOrderNumber);
+        //flatMap中只能调用返回值是Optional的方法
+        Optional<String> s3 = Optional.ofNullable(flightTicketInfo).flatMap(OptionalTest::getOrderNumber);
+    }
+    private static Optional<String> getOrderNumber(FlightTicketInfo flightTicketInfo) {
+        return Optional.ofNullable(flightTicketInfo).map(f -> f.getOrderNumber());
+    }
+}
+**********************************************************************************

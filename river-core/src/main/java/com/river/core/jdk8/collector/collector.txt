@@ -1,0 +1,39 @@
+/**
+ T:传入的Stream中的元素类型
+ A:累加器:容器
+ R:返回值：finisher返回
+*/
+public interface Collector<T,A,R>{
+        Supplier<A> supplier();//get()创建容器
+        BiConsumer<A,T> accumulator();//交给accumulator去执行accept(accumulator,next)
+        如果还有其它元素:T next = fetch next stream's item 继续交给accumulator去执行accept(accumulator,next)
+        
+        //combiner:接收两个部分的结果，并且进行合并
+       accumulator: BinaryOperator<A> combiner();//extends BiFunction<T,U,R> ->R apply(T t, U u);
+        如果没有其它元素: R result = collector.finisher().apply(accumulator);
+         Function<A,R> finisher();//apply()-->
+         return result//end
+        Set<Characteristices> characteristics();//定义的时候需要给出下面三个特征值
+}
+******************************************************************
+ @Override
+    @SuppressWarnings("unchecked")
+    public final <R, A> R collect(Collector<? super P_OUT, A, R> collector) {
+        A container;
+        if (isParallel()
+                && (collector.characteristics().contains(Collector.Characteristics.CONCURRENT))
+                && (!isOrdered() || collector.characteristics().contains(Collector.Characteristics.UNORDERED))) {
+            container = collector.supplier().get();
+            BiConsumer<A, ? super P_OUT> accumulator = collector.accumulator();
+            forEach(u -> accumulator.accept(container, u));
+        }
+        else {
+            container = evaluate(ReduceOps.makeRef(collector));
+        }
+        return collector.characteristics().contains(Collector.Characteristics.IDENTITY_FINISH)
+               ? (R) container
+               : collector.finisher().apply(container);
+    }
+ *******************************************************************
+//特征
+CONCURRENT并行,UNORDERED排序,IDENTITY_FINISH输入输出

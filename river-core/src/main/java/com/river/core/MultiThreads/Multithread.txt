@@ -1,0 +1,335 @@
+1.ready-to-run ------> Running --->Dead
+Blocked:阻塞状态--->当数据获取到,或者拿到锁后就不再阻塞，开始进入执行状态
+Sleeping:超时等待,只能回到就绪状态
+waiting:等待，必须直到被唤醒，只能回到就绪状态
+-----------------------------------------------------------------------------------------------------
+1.初始化状态：
+Thread thread1 = new Thread(new ThreadTest1())
+2.ready状态:
+thread1.start()//此时并不是运行状态
+3.Running状态：
+抢夺锁(CPU资源)，抢到了就进入Running状态，抢不到就继续保持ready状态
+
+----------------------创建线程多种方式,中断---------------------------------------------------
+线程的创建:
+private void init(ThreadGroup g,Runnable target,String name,long stackSize){
+//1.ThreadGroup:线程组-->对线程分组,可以将线程加入线程组
+//2.Runnable:指定线程任务
+//3.name:指定线程名字
+//4.stackSize:该线程栈的大小--->没有指定就默认为0
+***setDaemon(true):设置线程为守护线程，随着主程序的退出而自动退出!!!!!!!!!!!!!!!!!!!
+
+----------------------------匿名内部类问题-------------------------------------------------
+new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println("继承run方法");
+			}
+
+		}) {
+			public void run() {
+				System.out.println("重写run方法");
+			}
+
+		}.start();
+如果在匿名内部类中既有继承的run方法又有重写的run方法，根据java的多态性，将会执行重写的run方法!!!!!!!!!!!!!!
+}
+----------------------------匿名内部类问题-------------------------------------------------
+----------------------------Callable-----------------------------------------------------
+@FunctionalInterface
+public interface Callable<V> {//定义了泛型
+    V call() throws Exception;
+}
+
+public class Demo4 implements Callable<Integer>{
+
+	@Override
+	public Integer call() throws Exception {
+		System.out.println("正在进行计算.....");
+		Thread.sleep(3000);
+		return 1;
+	}
+
+	public static void main(String[] args) {
+		
+	}
+}
+----------------------------Callable-----------------------------------------------------
+----------------------------------线程池(接口)!!!----------------------------------------------
+public interface Executor {
+
+    /**
+     * Executes the given command at some time in the future.  The command
+     * may execute in a new thread, in a pooled thread, or in the calling
+     * thread, at the discretion of the {@code Executor} implementation.
+     *
+     * @param command the runnable task
+     * @throws RejectedExecutionException if this task cannot be
+     * accepted for execution
+     * @throws NullPointerException if command is null
+     */
+    void execute(Runnable command);
+}
+********************************************************
+public static void main(String[] args) {
+		ExecutorService threadPool = Executors.newFixedThreadPool(10);// 创建了带有10个线程的线程池，相当于直接创建了10个线程
+		for (int i = 0; i < 100; i++) {
+			threadPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println(Thread.currentThread().getName() + "运行");
+				}
+
+			});// execute
+		}//该线程池提交100个线程任务，由10个线程来完成
+
+		threadPool.shutdown();// 线程池销毁
+	}
+	
+ExecutorService threadPool2 = Executors.newCachedThreadPool();//该方法比较智能创建缓存线程池，会根据线程任务来自动创建和回收线程
+*****************************************************************
+----------------------------------线程池!!!----------------------------------------------
+---------------------------------使用spring实现多线程---------------------------------------
+@Configuration
+@ComponentScan("com.river.core.MultiThreads.spring")
+@EnableAsync//支持异步
+public class Config {
+//@Configuration:定义为配置文件
+//@ComponentScan("com.river.core.MultiThreads.spring")：定义该配置文件扫描的包
+//@EnableAsync//支持异步
+}
+
+
+@Service：定义为service文件，注入spring
+public class DemoService {
+	@Async // 异步
+	public void a() {
+		while (true) {
+			System.out.println("a");
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}}
+
+	
+@SpringBootApplication
+@RestController
+public class Main {
+
+	public static void main(String[] args) {
+	//通过定义的configuration获取AnnotationConfigApplicationContext
+		AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(Config.class);
+		//获取注入的service
+		DemoService ds = ac.getBean(DemoService.class);
+		//调用service中定义的异步方法实现多线程
+		ds.a();
+		ds.b();
+	}
+}
+---------------------------------使用spring实现多线程---------------------------------------
+-------------------------------线程安全---------------------------------------------------
+线程安全
+
+活跃性问题:死锁、饥饿、活锁
+1.死锁:(拿到资源的线程互相不释放资源):jconsole可以检测死锁
+
+2.饥饿:
+-高优先级吞噬所有低优先级的CPU时间片
+-线程被永久堵塞在一个等待进入同步快的状态
+-等待的线程永远不被唤醒(线程通信)
+--->如何避免饥饿问题：
+-优先级最大值:10  \  优先级最小值:1 \ 优先级中间值:5
+
+*不同的系统优先级不相同，使用合理的优先级
+     t1.setPriority(Thread.MAX_PRIORITY);
+     Thread t2 = new Thread(new Target());
+     t2.setPriority(Thread.NORM_PRIORITY);
+     Thread t3 = new Thread(new Target());
+     t3.setPriority(Thread.MIN_PRIORITY);
+*使用锁来代替synchronized
+
+3.活锁:()
+
+性能问题:
+*************************线程安全问题*********************************
+1.内置锁:java中每一个对象都可以用作同步的锁
+2.互斥锁:
+3.synchronized除了修饰普通方法，还可以修饰静态方法
+4.synchronized修饰代码块
+5.synchronized原理与使用:javap -verbose *.class来看字节码
+6.锁信息存在对象头中:
+   a.Mark word (存对象的hash值和锁信息等):线程id;Epoch(年代);对象的分代年龄信息;是否是偏向锁;锁标志位
+   b.Class Metadata Address
+   c.数组对象会比普通对象一个Array Length信息
+7.偏向锁:
+   -每次获取和释放锁会浪费资源
+   -很多情况下，竞争锁只是由一个线程再使用，因此才会有偏向锁
+   -只有一个线程再访问同步代码块，使用偏向锁可以提高性能  
+   -等到竞争出线才释放锁
+8.轻量级锁:可以同时让多个线程进入同步代码块!!!!
+  -自旋锁:当线程想获取轻量级锁发现已经被其它线程获取的时候，就是一直请求，一直请求到其它线程释放锁它再获取
+  -多个线程可以同时
+
+
+9.重量级锁:synchronized
+   -执行完毕后其它锁才能进入
+*****************************单例与线程安全*************************************************
+饿汉式:先赋值
+懒汉式:根据条件判断进行赋值
+-------------------------------线程安全---------------------------------------------------
+Volatile称之为轻量级锁，被volatile修饰的变量，在线程之间是可见的:
+->可见:一个线程修改了这个变量的值，在另外一个线程中能够读到这个修改后的值
+->Synchronized除了线程之间互斥，还可以保证变量的可见性
+private int a = 1;
+public synchronized int getA(){return a;}
+public synchronized void setA(){this.a = a;}
+synchronized锁住的是当前对象的实例，当一个线程拿到当前对象的实例锁调用set方法的时候，其它线程如果想调用get需要等待
+因此线程更加安全(保证了a在线程的可见性)<前提是:多个线程必须拿到同一把锁，只定义一个对象的实例，否则无法保证线程安全!!!!>
+
+-->可以在变量上使用Volatile达到同样的效果
+private Volatile int a = 1;
+public  int getA(){return a;}
+public  void setA(){this.a = a;}
+同样可以使得线程安全，保证a的可见性
+
+----------------------------------Lock指令----------------------------------------------
+在多处理器的系统上
+->将当前处理器缓存行的内容写回到系统内存
+->写回到内存的操作会使在其它CPU缓存了改地址的数据失效，保证了一个线程修改数据时另一个线程可以
+-->硬盘 -->内存 -->cpu的缓存(读写速度最高，最小单位为缓存行) 
+volatile会影响系统的性能,因为会影响系统的缓存.
+原子性操作:get(){return a ...},set()该情况下使用volatile比较简洁:可以保证线程的可见性，不能保证原子性
+非原子性操作:get(){return a++ ...} 该情况下还是使用synchronized
+----------------------------------------原子类atomic----------------------------------------
+rt,jar--->java.util.concurrent.atomic
+原子更新基本类型:
+private AtomicInteger value = new AtomicInteger(0);//初始值为0
+value.getAndIncrement();
+
+原子更新数组:
+private int[] s = {2,1,4,6};
+AtomicIntegerArray arr = new AtomicIntegerArray(s);
+arr.getAndIncrement(2);//++arr[2]
+arr.getAndAdd(2, 10);//arr[2]+=10
+
+原子更新抽象类型:
+AtomicReference<User> user = new AtomicReference<User>();
+对User实例进行操作
+
+原子更新字段:
+AtomicIntegerFieldUpdater<User> u =  AtomicIntegerFieldUpdater.newUpdater(User.class, "old");//更新User类的old字段
+User user = new User();
+u.getAndIncrement(user);
+!!!要求old字段必须public volatile int old;
+
+unsafe类: Atomic原子类操作的底层是unsafe
+
+源码：
+public final int getAndUpdate(intUnaryOperator updateFunction){
+int next,prev;
+do{
+ prev = get();
+ next = updateFunction.applyAsInt(prev);
+ } while(!compareAndSet(prev,next));//自动将给与的更新后的值赋予当前值，如果更新值==期待值
+ return prev;
+}
+
+public final int updateAndGet(intUnaryOperator updateFunction){
+int next,prev;
+do{
+ prev = get();//获取当前的值
+ next = updateFunction.applyAsInt(prev);//当前值+1
+ } while(!compareAndSet(prev,next));//自动将给与的更新后的值赋予当前值，如果更新值==期待值
+ return next;
+}
+----------------------------------------原子类atomic----------------------------------------
+------------------------------------------Lock----------------------------------
+ReentrantiLock.class://判断该锁是否是公平锁
+public ReentrantLock(boolean fair){//使用给出的公平策略创建一个ReentrantiLock实例
+ sync = fair? new FairSync() : new NonfairSync();
+}
+
+interface condition: condition接口
+Lock:
+     ->需要显示的获取和释放锁，能让代码更灵活，可以进行创建锁的时候释放别的锁等操作,
+     ->可以将锁的释放放入finally代码块，确保锁能得到释放
+     ->相当于对synchronized的包装，可以方便的实现公平性!!!!!!!!!!
+     ->非阻塞的获取锁
+     ->能被中断的获取锁
+     ->超时获取锁,设置超时时间，超时后返回
+     
+/**
+ * Lock接口
+ *在使用lock 和unlock的时候必须给方法加上synchronized,才能准确的得到你想要的那把锁!!!!!
+ */
+public class MyLock implements Lock{
+    private boolean isLocked = false;//判断是否拿到锁
+	@Override
+	public synchronized void lock() {//上锁,起到线程进来就拿到一把锁，让其它线程无法进入的效果
+		//Thread.activeCount()
+		while(isLocked) {//使用while达到自旋效果
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		isLocked = true;//第一个线程进来改变isLocked为加锁
+	}
+	@Override//解锁
+	public synchronized void unlock() {
+		isLocked = false;//将isLocked改变为解状态锁
+		notify();//唤醒线程
+	}
+}
+//java.util.concurrent.locks
+-------------------- AbstractQueuedSynchronizer(AQS)---------------------------
+用于实现先进先出(FIFO)等待队列的阻塞锁和相关同步器(信号量、事件、等)提供的框架.有一个int值来表示状态，在大多数同步器里都会有用
+子类必须定义更改此状态的受保护方法，并定义哪种状态对于此对象意味着被获取或者被释放
+子类可以维护其他状态字段，但是为了获得同步只能追踪使用getState()\setState(int)\compareAndSetState(int,int)方法来操作以原子方式更新的int值
+->独占模式:其它线程视图获取该锁将无法成功
+重写 protected boolean tryAcquire(int arg)\protected tryRelease(int)方法。
+
+->共享模式:多个线程都有可能获取锁
+重写protected int tryAcquireShared(int arg)\tryReleaseShared(int)方法
+isHeldExclusively():判断是否独占模式，如果是返回true
+
+public final void acquire(int arg):以独占模式获取对象，忽略中断。通过至少调用一次tryAcquire(int)来实现方法，成功时返回，
+                                                                                           否则一直调用tryAcquire(int)将线程加入队列,使用此方法实现Lock.lock()方法!!!!!
+public final void acquireInterruptibly(int arg):以独占模式获取对象，如果中断则终止。通过先检查中断状态，至少调用一次tryAcquire(int)来实现
+                                                                               方法，成功时返回，否则一直调用tryAcquire(int)将线程加入队列,使用此方法实现Lock.lockInterruptibly()方法
+
+比synchronized的优势:可以中断，可以设置超时!!!!!!!!!!!!!!!!!!!
+
+public final boolean hasQueuedThreads():查询是否有正在等待的任何线程，如果有返回true,可能会因为中断和超时导致取消
+
+AQS提供了内部队列的检查、检测和监视的方法
+abstract static class Sync extends AbstractQueuedSynchronizer{}//同步器
+-------------------- AbstractQueuedSynchronizer(AQS)---------------------------
+-------------------------公平锁----------------------------------------------
+如果一个锁是公平的，那么锁的获取顺序就是符合请求的绝对时间顺序
+
+private boolean isLocked = false;
+private Thread lockingThread = null;
+添加一个private List<QueueObject>waitingThreads = new ArrayList<QueueObject>();
+public void lock() {
+QueueObject
+}
+-------------------------公平锁----------------------------------------------
+--------------------------!!!!读写锁!!!!!!---------------------------------------------
+排它锁：synchronized:，只能有一个性能进入
+共享锁:容许多个线程同时服务,只有读线程可以进入，不可以写写同时进入->为了让写线程安全必须要让读线程全部完成,
+              写线程才可以开始工作。
+
+***需要保存的状态:
+->int state:表示重入的次数(当前线程+1，非当前线程等待)
+->写锁重入的次数(只有所有的读锁都释放了，写锁才可以进入)
+->读锁的个数
+->每一个读锁重入的次数
+--------------------------读写锁---------------------------------------------

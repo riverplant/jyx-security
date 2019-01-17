@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- META SECTION -->
+<title>Demo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" id="theme"
+	href="css/theme-default.css" />
+<link rel="stylesheet" type="text/css" id="theme" href="css/selfcss.css" />
+<link href="fileUtil/css/fileinput.css" media="all" rel="stylesheet"
+	type="text/css" />
+<link rel="stylesheet" type="text/css" id="theme"
+	href="css/autocomplete.css" />
+<style>
+.slt {
+	display: none ! important;
+}
+
+.fixed-table-body {
+	padding-top: 10px;
+}
+
+.tabs {
+	margin-top: 0px;
+}
+/***表格内的文字居中 start**/
+thead>tr>th {
+	text-align: center;
+}
+
+tbody>tr>td {
+	text-align: center;
+}
+
+.stepContainer {
+	height: 100% ! important;
+}
+
+.modal-dialog {
+	/*     width: 950px; */
+	margin: 30px auto;
+}
+
+.bs-bars pull-left {
+	width: 950px;
+}
+
+.fixed-table-loading {
+	display: none;
+}
+
+.edui-default {
+	z-index: 999999 !important;
+}
+
+.modal-lg {
+	width: 100%;
+}
+/***表格内的文字居中 end**/
+</style>
+</head>
+<body onload="onload3()">
+	<div class="page-container">
+		<div class="page-sidebar" id="page-sidebar"></div>
+		<div class="page-content">
+			<ul class="x-navigation x-navigation-horizontal x-navigation-panel">
+				<!-- TOGGLE NAVIGATION -->
+				<li class="xn-icon-button"><a href="#"
+					class="x-navigation-minimize"><span class="fa fa-dedent"></span></a>
+				</li>
+				<!-- END TOGGLE NAVIGATION -->
+
+				<!-- END SEARCH -->
+				<!-- SIGN OUT -->
+				<li class="xn-icon-button pull-right"><a href="#"
+					class="mb-control" data-box="#mb-signout"><span
+						class="fa fa-sign-out"></span></a></li>
+
+			</ul>
+			<!-- END X-NAVIGATION VERTICAL -->
+
+			<!-- START BREADCRUMB -->
+			<ul class="breadcrumb">
+				<li><a href="javascript:void(0);">index</a></li>
+				<li class="active">demo</li>
+			</ul>
+			<!-- START JUSTIFIED TABS -->
+			<div class="panel panel-default tabs" style="margin-top: 0px;">
+
+				<div class="panel-body tab-content">
+					<div class="tab-pane active" id="tab8">
+						<!-- START SIMPLE DATATABLE -->
+						<div id="panel_detail_table" class="panel panel-default">
+							<div class="panel-heading">
+								<ul class="list-tags">
+									<li><span
+										style="background: #F5F5F5; border: 1px solid #CCC; border-radius: 2px;"><input
+											type="text" id="searchitem" placeholder="搜索">
+											<button class="btn btn-default" onclick="searchproduction();">
+												<span class="fa fa-search" id="deletemodal1"
+													style="height: 100%;"> </span>查询
+											</button> </span></li>
+									<li>&nbsp;&nbsp;</li>
+									<li id="crop-avatar"><button
+											class="btn btn-success btn-sm " id="addmodal"
+											data-toggle="modal" data-target="#addpro">
+											<span class="fa fa-plus"></span>增加
+										</button></li>
+
+									<li>&nbsp;&nbsp;</li>
+									<li>
+										<button class="plan_view btn btn-primary btn-sm" id="ylmodal"
+											data-toggle="modal" data-target="#ylexample">
+											<span class="fa fa-eye"></span> 预览
+										</button>
+									</li>
+									<li>&nbsp;&nbsp;</li>
+									<li id="crop-avatar">
+										<button class="plan_edit btn btn-info btn-sm avatar-view"
+											id="editmodal" data-toggle="modal"
+											data-target="#avatar-modal">
+											<span class="fa fa-edit"></span> 编辑
+										</button>
+									</li>
+									<li>&nbsp;&nbsp;</li>
+									<li><button class="plan_edit btn btn-info btn-sm"
+											data-toggle="modal" data-target="#example1" id="xgbtn">
+											<i class="fa fa-pencil"></i>批量修改状态
+										</button></li>
+									<li>&nbsp;&nbsp;</li>
+									<li>
+										<button class="plan_delete btn btn-danger btn-sm"
+											id="deletemodal" data-toggle="modal"
+											data-target="#deletmodalexample">
+											<span class="fa fa-times"></span> 删除
+										</button>
+									</li>
+								</ul>
+							</div>
+							<div class="panel-body">
+								<table id="T_ob_proList" class="display">
+
+								</table>
+							</div>
+						</div>
+						<!-- END SIMPLE DATATABLE -->
+					</div>
+				</div>
+			</div>
+			<!-- END JUSTIFIED TABS -->
+
+		</div>
+		<!-- END PAGE CONTENT -->
+	</div>
+	<!-- END PAGE CONTAINER -->
+	<!-- 弹出层    start -->
+	<!-- Modal -->
+	<div class="modal fade" id="addpro" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span class="glyphicon glyphicon-glass"></span>添加产品
+					</h4>
+				</div>
+				<div class="modal-body" style="min-height: 200px; overflow: auto;">
+					<div style="width: 100%; height: 100%;">
+						<form class="form-horizontal" id="ob_pro_add_form" role="form"
+							enctype="multipart/form-data">
+							<ul class="nav nav-tabs nav-justified" style="margin-top: 0px;">
+								<li role="presentation" class="active"><a
+									href="#pro_base_infos" data-toggle="tab">基本信息</a></li>
+								<li role="presentation"><a href="#pro_base_infos2"
+									data-toggle="tab">详细介绍</a></li>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="pro_base_infos">
+									<div class="row"
+										style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="name"><font
+											color="red">*</font>产品名称</label><input id="name" name="name"
+											class="form-control input-lg" placeholder="输入产品名称" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_level"><font
+											color="red">*</font>级别</label><input id="ob_level" name="ob_level"
+											onblur="checkZm(this.value,this.id)"
+											class="form-control input-lg " placeholder="级别" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_alcool"><font
+											color="red">*</font>酒精度</label><input id="ob_alcool" name="ob_alcool"
+											class="form-control input-lg " placeholder="酒精度" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_bzgg"><font
+											color="red">*</font>包装规格</label><input id="ob_bzgg" name="ob_bzgg"
+											class="form-control input-lg " placeholder="包装规格" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_remark"><font
+											color="red">*</font>备注</label><input id="ob_remark" name="ob_remark"
+											class="form-control input-lg " placeholder="备注" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_proregion"><font
+											color="red">*</font>产区</label><input id="ob_proregion"
+											name="ob_proregion" class="form-control input-lg "
+											placeholder="产区" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="pronumber"><font
+											color="red">*</font>数量</label><input id="pronumber" name="pronumber"
+											class="form-control input-lg " placeholder="库存数量" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="type"><font
+											color="red">*</font>类型</label><input id="type" name="type"
+											class="form-control input-lg " placeholder="产品类型"
+											onkeyup="autoComplete.start(event)" />
+										<div class="auto_hidden" id="auto">
+											<!--自动完成 DIV-->
+										</div>
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_price_zdl"><font
+											color="red">*</font>总代理</label><input id="ob_price_zdl"
+											name="ob_price_zdl" onblur="checkNum(this.value,this.id)"
+											class="form-control input-lg " placeholder="总代理" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_price_dl"><font
+											color="red">*</font>代理</label><input id="ob_price_dl"
+											name="ob_price_dl" onblur="checkNum(this.value,this.id)"
+											class="form-control input-lg " placeholder="代理" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_price_pf"><font
+											color="red">*</font>批发</label><input id="ob_price_pf"
+											name="ob_price_pf" onblur="checkNum(this.value,this.id)"
+											class="form-control input-lg " placeholder="批发" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+										<label class="form-control-label" for="ob_price_ls"><font
+											color="red">*</font>市场指导价</label><input id="ob_price_ls"
+											name="ob_price_ls" onblur="checkNum(this.value,this.id)"
+											class="form-control input-lg " placeholder="批发" />
+									</div>
+
+									<div style="width: 100%; height: 50px; margin-top: 10px;">
+
+										<label class="control-label" for="ob_vin_icon">上传该产品的图表</label>
+										<input id="input-2" name="input2[]" type="file" class="file"
+											multiple data-show-upload="false" data-show-caption="true">
+									</div>
+
+								</div>
+								<!-- info1 -->
+								<div class="tab-pane" id="pro_base_infos2">
+
+									<script id="editor" type="text/plain" name="description"
+										style="width: 100%; height: 500px;"></script>
+								</div>
+								<!--    <div  class="tab-pane" id="pro_base_infos3"> -->
+								<!--       <form enctype="multipart/form-data"> -->
+								<!--                         <label>图片/视屏上传</label> -->
+								<!--                         <input id="file-zh" name="file-zh[]" type="file" multiple> -->
+								<!--                     </form> -->
+								<!--   </div> -->
+							</div>
+							<!-- tab_content -->
+							<input type="reset" style="display: none">
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" id="resetBtn">内容重置</button>
+					<button type="button" class="btn btn-primary" id="pro_submit">提交</button>
+				</div>
+
+			</div>
+			<!-- /.modal-content -->
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="editeProImgs" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						<span class="glyphicon glyphicon-glass"></span>编辑产品图片
+					</h4>
+				</div>
+				<div class="modal-body" style="min-height: 200px; overflow: auto;">
+					<div style="width: 100%; height: 100%;">
+						<form enctype="multipart/form-data">
+							<label>图片/视屏上传</label> <input id="file-zh" name="file"
+								type="file" multiple data-min-file-count="1"> <input
+								id="pro_img_pid" name="pid" type="text" style="display: none" />
+						</form>
+
+					</div>
+					<!-- tab_content -->
+				</div>
+			</div>
+
+
+		</div>
+		<!-- /.modal-content -->
+	</div>
+
+
+	<!-- MESSAGE BOX-->
+	<div class="message-box animated fadeIn" id="mb-signout"></div>
+
+	<!-- END MESSAGE BOX-->
+
+	<!-- START PLUGINS -->
+	<script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="js/plugins/jquery/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="js/jquery-form.js"></script>
+
+	<script type="text/javascript"
+		src="js/plugins/bootstrap/bootstrap.min.js"></script>
+	<!-- END PLUGINS -->
+
+	<!-- START THIS PAGE PLUGINS-->
+	<script type='text/javascript' src='js/plugins/icheck/icheck.min.js'></script>
+	<script src="js/bootstrap-table.min.js"></script>
+	<!--     <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-zh-CN.min.js"></script> -->
+	<script src="js/bootstrap-table-zh-CN.min.js"></script>
+	<script type="text/javascript" src="js/settings.js"></script>
+	<script type="text/javascript" src="js/plugins.js"></script>
+	<script type="text/javascript" src="js/actions.js"></script>
+	<script type="text/javascript" src="js/bootstrapExport1.js"></script>
+	<script type="text/javascript" src="js/bootstrapExport2.js"></script>
+	<script src="js/autocomplete.js"></script>
+	<!-- 验证 -->
+	<script type='text/javascript'
+		src='js/plugins/bootstrap/bootstrap-datepicker.js'></script>
+	<script type='text/javascript'
+		src='js/plugins/bootstrap/bootstrap-select.js'></script>
+	<script type='text/javascript'
+		src='js/plugins/validationengine/languages/jquery.validationEngine-en.js'></script>
+	<script type='text/javascript'
+		src='js/plugins/validationengine/jquery.validationEngine.js'></script>
+	<script type='text/javascript'
+		src='js/plugins/jquery-validation/jquery.validate.js'></script>
+	<script type='text/javascript'
+		src='js/plugins/maskedinput/jquery.maskedinput.min.js'></script>
+	<!--   bootstrapExport1.js -->
+	<script type="text/javascript"
+		src="js/plugins/mcustomscrollbar/jquery.mCustomScrollbar.min.js"></script>
+	<script type="text/javascript"
+		src="js/plugins/bootstrap/bootstrap-datepicker.js"></script>
+	<script type="text/javascript"
+		src="js/plugins/bootstrap/bootstrap-file-input.js"></script>
+	<script type="text/javascript"
+		src="js/plugins/bootstrap/bootstrap-select.js"></script>
+	<script type="text/javascript"
+		src="js/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+	<script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+	<script type="text/javascript" src="js/jquery.ztree.encheck.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/fgd.js"></script>
+	<script src="cropper/cropper.min.js"></script>
+	<script src="sitelogo/sitelogo.js"></script>
+	<script type="text/javascript" src="js/ob_provin.js"></script>
+	<script type="text/javascript" src="layer/layer.js"></script>
+	<script type="text/javascript" src="js/formcheck.js"></script>
+	<script type="text/javascript" src="js/ob_head.js"></script>
+	<script type="text/javascript" charset="utf-8"
+		src="ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8"
+		src="ueditor/ueditor.all.min.js">
+		
+	</script>
+	<script src="fileUtil/js/fileinput.js" type="text/javascript"></script>
+	<!--简体中文-->
+	<script src="fileUtil/js/locales/zh.js" type="text/javascript"></script>
+	<script type="text/javascript" charset="utf-8" src="js/fileUtil.js">
+		
+	</script>
+	<script type="text/javascript" charset="utf-8" src="js/obpro.js">
+		
+	</script>
+
+</body>
+<script type="text/javascript">
+	//实例化编辑器
+	//建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+	var ue = UE.getEditor('editor', {
+		//这里可以选择自己需要的工具按钮名称,此处仅选择如下五个  
+		// toolbars:[['source', 'undo', 'Undo', 'Redo','bold','test']],  
+		//focus时自动清空初始化时的内容  
+		autoClearinitialContent : true,
+		//关闭字数统计  
+		wordCount : false,
+		//关闭elementPath  
+		elementPathEnabled : false,
+		//默认的编辑区域高度  
+		initialFrameHeight : 300
+	//更多其他参数，请参考ueditor.config.js中的配置项  
+	});
+	// var ue = UE.getEditor('editor');
+	UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+	UE.Editor.prototype.getActionUrl = function(action) {
+		if (action == 'uploadimage' || action == 'uploadscrawl'
+				|| action == 'uploadimage') {
+			return "http://192.168.0.57:8080/observice/file/ueEditupload.do"
+		} else if (action == 'uploadvideo') {
+			return "http://192.168.0.57:8080/observice/file/UploadMedia.do"
+		} else if (action == 'listimage') {
+			return ""
+		} else {
+			return this._bkGetActionUrl.call(this, action);
+		}
+	}
+</script>
+</html>

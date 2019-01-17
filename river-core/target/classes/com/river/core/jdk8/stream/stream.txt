@@ -1,0 +1,112 @@
+--Sequence of elements:(Dish)
+
+
+--Source:(menu)
+
+
+--Data processing operations:(filter,map,sort,reduce,find,match,limit...)
+  Stream operations can be executed either sequentially or parallel
+
+  Stream<Dish> dishStream = Stream.of(new Dish(),new ...)//使用Stream.of产生一个Stream
+  
+ iterator-->public interface UnaryOperator<T> extends Function<T, T>
+ 继承Function的方法R apply(T t);
+ 自带一个静态方法:static <T> UnaryOperator<T> identity() {return t -> t;}
+-------------------------方法----------------------------------------------
+filter
+limit
+skip
+map
+flaymap
+distinct
+----------------------------------------------------------------------
+match:Stream.allMatch(Predicate<? super Integer> predicate)
+Stream<Integer>stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7});
+	//Stream.allMatch(Predicate<? super Integer> predicate)
+	boolean matched = stream.allMatch(i->i>0);//stream总所有元素>0
+	assert matched :"some elements not mached";//断言
+	stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7});//必须重现创建一次，因为流之前已经关闭
+	 matched = stream.anyMatch(i->i>6);//stream中有一个元素>6
+--------------------------------------------------------------------------------------	 
+find ：
+private static int find(Integer[] values ,int defaultValue,Predicate<Integer>predicate) {
+	for(int i:values) {
+		if(predicate.test(i)) {
+			return i;
+		}
+	}
+	return defaultValue;
+}
+int result = find(new Integer[] {1,2,3,4,5,6,7},-1,i->i>100);
+	System.out.println(result);//通过以上方法可以实现如果查找失败返回-1
+
+Stream<Integer>stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7});
+	Optional<Integer> optional = stream.filter(i->i%2==0).findAny();
+	int result = optional.orElse(-1);
+	System.out.println(result);//使用optional.orElse(-1)同样实现查找失败返回-1
+	避免了空指针
+	
+ stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7});
+	Optional<Integer> optional3 = stream.filter(i->i>10).findAny();
+	optional3.ifPresent(System.out::println);//Optional.ifPresent(Consumer<? super Integer> consumer)
+	//实现了如果存在就打印:Consumer accept(T t);消费者
+--------------------------------------------------------------------------------	
+reduce:聚合(BiFunction)
+Stream<Integer>stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7});
+	//Stream.reduce(Integer identity, BinaryOperator<Integer> accumulator)
+	//public interface BinaryOperator<T> extends BiFunction<T,T,T>
+	stream.reduce(0, (i,j)->i+j);//将数组中的所有数字加起来
+	//stream.reduce(0, Integer::sum);//第二个参数BinaryOperator<T>是一个Function,所以可以直接写
+	stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7});
+	 stream.reduce((i,j)->i+j).ifPresent(System.out::println);
+	//option.get();
+	返回最大值：因为需要的是function,所以可以自己写
+	 stream.reduce((i,j)->{
+		 return i>j?i:j;
+	 }).ifPresent(System.out::println);
+	 //可以这样写
+	 stream.reduce((i,j)->Integer::max).ifPresent(System.out::println);
+	 stream.reduce((i,j)->Integer::min).ifPresent(System.out::println);
+	 int result = stream.filter(i->i%2==0).reduce(1,(i,j)->i*j);
+	 Optional.of(result).ifPresent(System.out::println);
+-----------------------------------------------------------------------------
+sum
+count
+max
+---------------------------------numericStream-----------------------------------------------
+Stream<Integer> stream = Arrays.stream(new Integer[] {1,2,3,4,5,6,7,8});
+	//Stream.mapToInt(ToIntFunction<? super Integer> mapper)
+	/**
+	 * @FunctionalInterface
+      public interface ToIntFunction<T> {
+        int applyAsInt(T value);}//传入一个参数，返回一个int
+	 */
+	IntStream intstream = stream.mapToInt(i->i.intValue());
+	
+	intstream.filter(i->i>3).sum();//使用IntStream可以节省内存,当使用Stream的时候操作的是Obj
+	Integer result = stream.filter(i->i.intValue()>3).reduce(0,Integer::sum);
+	//int : 4个字节，32位
+	
+/**勾股定理
+ * a*a + b*b = c*c
+ * Math.sqrt(a*a+b*b)%1==0
+ * 返回一个int[a,b,c]
+ */
+private static void tripDemo() {
+	int a = 9;
+	/**Returns a sequential ordered IntStream from startInclusive
+	 * (inclusive) to endInclusive (inclusive) by an incremental step of 1.
+	 */
+	IntStream intStream = IntStream.rangeClosed(1, 100);
+	 intStream.filter(b->Math.sqrt(a*a+b*b)%1==0)
+	.boxed()//将IntStream封箱回Stream<int[]>来方便调用map方法返回一个int[]
+	.map(b -> new int[]{a,b,(int)Math.sqrt(a*a+b*b)})//Stream<int[]>stream
+	.forEach(r->System.out.println("a="+r[0]+"b="+r[1]+"c="+r[2]));
+	 //====================================================================
+	 IntStream.rangeClosed(1, 100).filter(b ->Math.sqrt(a*a+b*b)%1==0)
+	 .mapToObj(b->new int[]{a,b,(int)Math.sqrt(a*a+b*b)})
+	 .forEach(r->System.out.println("a="+r[0]+"b="+r[1]+"c="+r[2]));
+}
+
+
+

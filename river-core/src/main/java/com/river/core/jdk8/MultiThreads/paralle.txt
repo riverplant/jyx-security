@@ -1,0 +1,32 @@
+Stream多线程
+*******************************************************************
+//获得CPU核数
+System.out.println(Runtime.getRuntime().availableProcessors());
+*******************************************************************
+    private static long LongStreamParalle(long limit) {//使用并行速度是普通的2倍以上
+		return LongStream.rangeClosed(1, limit).parallel().sum();
+	}
+	
+	/**
+	 * 非Stream的写法
+	 * 
+	 * @param limit
+	 * @return
+	 */
+	private static long normalAdd(long limit) {
+		long result = 0L;
+		for (long i = 0; i < limit; i++) {
+			result += i;
+		}
+		return result;
+	}
+	//设置系统并行的个数!!!!尽量不要去改变
+	System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism","20")
+	并行的效果:
+	ArrayList        Excellent
+	LinkedList       poor
+	IntStream.range  Excellent
+	Stream.iterate   Poor
+	HashSet          Good
+	TreeSet          Good
+**************************************************************

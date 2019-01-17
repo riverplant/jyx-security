@@ -1,0 +1,33 @@
+1.lambda的语法
+(o1,o2)->o1.getColor().compareTo(o2.getColor())
+(o1,o2):参数列表
+o1.getColor().compareTo(o2.getColor())：body
+Function<T,R>:R apply(T t);
+Function<String,Integer> flambda = s ->s.length();
+Predicate:判断 boolean test(T)方法
+Predicate<Apple> predicate = a ->a.getColor().equals("green");
+Supplier: T get();
+2.在哪里使用
+
+3.execute around pattern
+
+
+4.Functional interfaces
+
+
+5.Method references
+//匿名内部类
+list.sort(new Comparator<Apple>{
+    public int compare(Apple a1,Apple a2){
+          return a1.getColor().compareTo(a2.getColor());      
+          }
+})
+//list.sort((a1,a2)->a1.getColor().compareTo(a2.getColor()));
+//list.sort(Comparator.comparing(Apple::getColor));
+6.Type inference
+7.Composing lambdas
+Predicate boolean test(T t);谓语
+Consumer accept(T t);消费者
+Function<T,R> R apply(T t);
+Supplier<T>  T get(); 供给
+--------------------------Stream--------------------------------------------
